@@ -22,9 +22,9 @@ VarMax.y=model.ymax;           % Upper Bound of Variables
 
 %% GSO Parameters
 
-MaxIt=10;          % Maximum Number of Iterations
+MaxIt=3;          % Maximum Number of Iterations
 
-nPop=150;           % Population Size (Swarm Size)
+nPop=100;           % Population Size (Swarm Size)
 
 w=1;                % Inertia Weight
 wdamp=0.98;         % Inertia Weight Damping Ratio
@@ -32,11 +32,11 @@ c1=1.5;             % Personal Learning Coefficient
 c2=1.5;             % Global Learning Coefficient
 
 %RANGE
-range_init = 5.0;
-range_boundary = 25.2;
+range_init = 35.0;
+range_boundary = 50.2;
 
 %LUCIFERIN
-luciferin_init = 5;
+luciferin_init = 25;
 luciferin_decay = 0.4;
 luciferin_enhancement = 0.6;
 
@@ -114,7 +114,7 @@ for it=1:MaxIt
         % x Part
 
     	 % Update luciferin
-        glowworm(i).luciferin.x = (1-luciferin_decay).*glowworm(i).luciferin.x + luciferin_enhancement.*glowworm(i).Cost;
+        glowworm(i).luciferin.x = (1-luciferin_decay).*glowworm(i).luciferin.x + luciferin_enhancement.*(glowworm(i).Cost./10);
 
 
         neighbors.x = [];
@@ -189,7 +189,7 @@ for it=1:MaxIt
          % y Part
 
     	 % Update luciferin
-        glowworm(i).luciferin.y = (1-luciferin_decay)*glowworm(i).luciferin.y + luciferin_enhancement*glowworm(i).Cost;
+        glowworm(i).luciferin.y = (1-luciferin_decay)*glowworm(i).luciferin.y + luciferin_enhancement.*(glowworm(i).Cost./10);
 
         %find neighbour 
         
