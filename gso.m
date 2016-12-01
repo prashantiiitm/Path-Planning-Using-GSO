@@ -22,7 +22,7 @@ VarMax.y=model.ymax;           % Upper Bound of Variables
 
 %% GSO Parameters
 
-MaxIt=2;          % Maximum Number of Iterations
+MaxIt=10;          % Maximum Number of Iterations
 
 nPop=150;           % Population Size (Swarm Size)
 
@@ -44,6 +44,7 @@ luciferin_enhancement = 0.6;
 k_neigh = 5;
 beta = 0.005;
 
+step_size = 5;
 
 %% Initialization
 
@@ -127,17 +128,18 @@ for it=1:MaxIt
         end
         
         if size(neighbors.x,2) > 0
-         % find the node in the direction of which the glowworm should follow
+         % find the node in the direction of which the glowworm should
+         % follow
             li = glowworm(i).luciferin.x;
-            sum_lk = sum(glowworm.luciferin.x);
+            sum_lk = sum(glowworm(i).luciferin.x);
             neighbors_index = size(neighbors.x,2);
             
             %calc probabilties for each neighbor been followed
             probs = zeros(1,neighbors_index);
             for j = 1:neighbors_index
-                probs(j) = glowworm(j).luciferin.x - li;
+                probs(j) = sum(glowworm(j).luciferin.x) - sum(li);
             end
-            probs = probs ./( sum_lk - (size(probs,2)*li));
+            probs = probs./( sum_lk - (size(probs,2)*li));
             
             %calc prob range
             acc = 0;
@@ -147,11 +149,11 @@ for it=1:MaxIt
                 wheel = [wheel ; acc];
             end
 
-            wheel(-1) = 1 ;
+            %wheel(-1) = 1 ;
 
             %randomly choice a value for wheel selection method
             rand_val = rand;
-            following = NaN;
+            following = 1;
             
             
             
@@ -161,18 +163,18 @@ for it=1:MaxIt
                 end
             end
 
-            toward_index = neighbor_index;
+            toward_index = following;
             
             %Position update 
             glowworms = glowworm(i).Position.x;
             toward = glowworm(toward_index).Position.x;
             
-            normV = norm(toward-glowworm);
-            if normV == 0 && ISNAN(normV)
-                norm = 5; %step size 
+            normV = norm(toward - glowworms);
+            if normV == 0 && isnan(normV)
+                normV = 5; %step size 
             end
             
-            new_position = glowworms + step_size.*(toward-glowworm)./norm;
+            new_position = glowworms + step_size.*(toward-glowworms)./normV;
             glowworm(i).Position.x = new_position;
         end
         
@@ -205,14 +207,15 @@ for it=1:MaxIt
             
             % find the node in the direction of which the glowworm should follow
             li = glowworm(i).luciferin.y;
-            sum_lk = sum(glowworm.luciferin.y);
+            sum_lk = sum(glowworm(i).luciferin.y);
             neighbors_index = size(neighbors.y,2);
+            
             %calc probabilties for each neighbor been followed
             probs = zeros(1,neighbors_index);
             for j = 1:neighbors_index
-                probs(j) = glowworm(j).luciferin.y - li;
+                probs(j) = sum(glowworm(j).luciferin.y) - sum(li);
             end
-            probs = probs ./( sum_lk - (size(probs,2)*li));
+            probs = probs./(sum_lk - (size(probs,2)*li));
             
             %calc prob range
             acc = 0;
@@ -222,11 +225,11 @@ for it=1:MaxIt
                 wheel = [wheel ; acc];
             end
 
-            wheel(-1) = 1 ;
+            %wheel(-1) = 1 ;
 
             %randomly choice a value for wheel selection method
             rand_val = rand;
-            following = NaN;
+            following = 1;
             
             
             
@@ -236,19 +239,19 @@ for it=1:MaxIt
                 end
             end
 
-            toward_index = neighbor_index;
+            toward_index = following;
             
             %Position update 
             glowworms = glowworm(i).Position.y;
             toward = glowworm(toward_index).Position.y;
             
-            normV = norm(toward-glowworm);
-            if normV == 0 && ISNAN(normV)
-                norm = 5; %step size 
+            normV = norm(toward-glowworms);
+            if normV == 0 && isnan(normV)
+                normV = 5; %step size 
             end
             
-            new_position = glowworms + step_size.*(toward-glowworm)./norm;
-            A = new_position
+            new_position = glowworms + step_size.*(toward-glowworms)./normV;
+            A = new_position;
             glowworm(i).Position.y = new_position;
             
         end
@@ -269,7 +272,7 @@ for it=1:MaxIt
         end 
         % Update Global Best
         if glowworm(i).Best.Cost<GlobalBest.Cost
-            GlobalBest=particle(i).Best;
+            GlobalBest=glowworm(i).Best;
         end
             
         
