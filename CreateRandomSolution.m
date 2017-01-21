@@ -27,8 +27,3 @@ function sol1=CreateRandomSolution(model)
 end
 
 
-function val = find_neighbors()
-	
-
-
-end
